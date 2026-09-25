@@ -163,6 +163,42 @@ select.form-control {
 
 .btn-sm { padding: 5px 10px; font-size: 11px; }
 
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 12px;
+  color: var(--text-dim);
+  font-size: 10px;
+  font-family: var(--font-mono);
+}
+
+.connection-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.connection-online { color: var(--accent-green); }
+.connection-online .connection-dot { background: var(--accent-green); }
+.connection-checking { color: var(--accent-amber); }
+.connection-checking .connection-dot { background: var(--accent-amber); }
+.connection-offline { color: var(--accent-red); }
+.connection-offline .connection-dot { background: var(--accent-red); }
+
+.connection-retry {
+  margin-left: auto;
+  padding: 2px 6px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
 /* Examples */
 .example-pill {
   display: block;

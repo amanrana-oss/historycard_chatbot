@@ -1,4 +1,4 @@
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const BASE_URL = process.env.REACT_APP_API_URL || '';
 
 async function apiFetch(path, options = {}) {
   const res = await fetch(`${BASE_URL}${path}`, {
@@ -13,6 +13,8 @@ async function apiFetch(path, options = {}) {
 }
 
 export const api = {
+  health: () => apiFetch('/health'),
+
   chat: (question, stationFilter, dateFrom, dateTo) =>
     apiFetch('/chat', {
       method: 'POST',

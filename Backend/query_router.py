@@ -21,9 +21,9 @@ from torque_filter import (
 TABLE = f"[{config.TABLE_SCHEMA}].[{config.TABLE_NAME}]"
 
 # ─────────────────────────────────────────────
-# HARDCODED LEAK STATION — always ML-47 only
+# Leak data is available at these stations.
 # ─────────────────────────────────────────────
-LEAK_STATION = "ML-47"
+LEAK_STATIONS = ["ML-47", "ML-53"]
 LEAK_COLUMNS = [
     "Leak_Value", "Leak1", "Leak2", "Leak3",
     "Leak1_Status", "Leak2_Status", "Leak3_Status",
@@ -373,9 +373,9 @@ def build_query(plan: Dict[str, Any], schema_columns: List[str]):
 
         # ── LEAK: hardcoded ML-47 always ────────────────────────────────────
         if parameter == "leak":
-            if station and station != LEAK_STATION:
+            if station and station not in LEAK_STATIONS:
                 return None, None, None, (
-                    f"Leak values only exist at station ML-47. "
+                    f"Leak values only exist at stations {', '.join(LEAK_STATIONS)}. "
                     f"Station {station} does not have leak data."
                 )
 
@@ -386,8 +386,11 @@ def build_query(plan: Dict[str, Any], schema_columns: List[str]):
             anchor = _anchor_cols(schema_columns)
             selected = anchor + [c for c in leak_cols if c not in anchor]
 
-            clauses: List[str] = ["Stn_Number = ?"]
-            params: List[Any] = [LEAK_STATION]
+            leak_station_sql, leak_station_params = _in_clause(
+                [station] if station else LEAK_STATIONS
+            )
+            clauses: List[str] = [f"Stn_Number IN {leak_station_sql}"]
+            params: List[Any] = leak_station_params
 
             if engine:
                 clauses.append(f"{_engine_expr()} = ?")
@@ -411,8 +414,9 @@ def build_query(plan: Dict[str, Any], schema_columns: List[str]):
             return sql, params, {
                 "focus": "station_parameter_query",
                 "parameter": "leak",
-                "station": LEAK_STATION,
-                "note": "Leak data is only available at ML-47",
+                "station": station,
+                "stations": LEAK_STATIONS,
+                "note": "Leak data is available at ML-47 and ML-53",
                 "selected_columns": selected,
             }, None
 

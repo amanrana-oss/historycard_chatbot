@@ -1,14 +1,12 @@
 import React from 'react';
 
-// ML-01 through ML-54 — hardcoded, no API dependency
-const ALL_STATIONS = Array.from({ length: 54 }, (_, i) => `ML-${String(i + 1).padStart(2, '0')}`);
-
 const EXAMPLES = [
   'summary of engine J3A5FNS2048940',
   'show timeline of engine J3A5FNS2048940',
   'barcode for ML-50 today',
   'torque value of ML-10 today',
-  'leak value today',
+  'leak value for ML-47 today',
+  'leak value for ML-53 today',
   'show all barcodes this week',
   'torque for ML-43 yesterday',
   'station status for ML-47 today',
@@ -17,7 +15,14 @@ const EXAMPLES = [
   'show ML-39 details for engine J3A5FNS2048940',
 ];
 
-export default function Sidebar({ onQuickQuery, onFilterChange, filters }) {
+export default function Sidebar({
+  onQuickQuery,
+  onFilterChange,
+  filters,
+  stations,
+  connectionStatus,
+  onRetry,
+}) {
   const handleQuickQuery = () => {
     const { station, param, dateFrom, dateTo } = filters;
     if (!param || param === '(choose)') { alert('Pick a parameter first.'); return; }
@@ -65,7 +70,7 @@ export default function Sidebar({ onQuickQuery, onFilterChange, filters }) {
           <select className="form-control" value={filters.station}
             onChange={e => onFilterChange({ ...filters, station: e.target.value })}>
             <option value="(all)">(all stations)</option>
-            {ALL_STATIONS.map(s => <option key={s} value={s}>{s}</option>)}
+            {stations.map(s => <option key={s} value={s}>{s}</option>)}
           </select>
         </div>
 
@@ -96,6 +101,20 @@ export default function Sidebar({ onQuickQuery, onFilterChange, filters }) {
         <button className="btn btn-primary" onClick={handleQuickQuery}>
           ▶ Run Quick Query
         </button>
+
+        <div className={`connection-status connection-${connectionStatus}`}>
+          <span className="connection-dot" />
+          <span>
+            {connectionStatus === 'checking' && 'Checking backend...'}
+            {connectionStatus === 'online' && 'Backend connected'}
+            {connectionStatus === 'offline' && 'Backend unavailable'}
+          </span>
+          {connectionStatus === 'offline' && (
+            <button className="connection-retry" onClick={onRetry} type="button">
+              Retry
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="divider" />

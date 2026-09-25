@@ -1,0 +1,61 @@
+Station,Torque_Spec,Torque_Columns,Torque_Column_Count
+ML-01,,,0
+ML-02,,,0
+ML-03,,,0
+ML-04,,,0
+ML-05,,,0
+ML-06,,,0
+ML-07,,,0
+ML-08,N2(1-4),"N2_torque1, N2_torque2, N2_torque3, N2_torque4",4
+ML-09,,,0
+ML-10,N5(1-16),"N5_torque1, N5_torque2, N5_torque3, N5_torque4, N5_torque5, N5_torque6, N5_torque7, N5_torque8, N5_torque9, N5_torque10, N5_torque11, N5_torque12, N5_torque13, N5_torque14, N5_torque15, N5_torque16",16
+ML-11,N4(1-2),"N4_torque1, N4_torque2",2
+ML-12,N2(1),N2_torque1,1
+ML-13,,,0
+ML-14,N2(1),N2_torque1,1
+ML-15,,,0
+ML-16,N2(1),N2_torque1,1
+ML-17,,,0
+ML-18,N5(1-6),"N5_torque1, N5_torque2, N5_torque3, N5_torque4, N5_torque5, N5_torque6",6
+ML-19,,,0
+ML-20,N5(1-4),"N5_torque1, N5_torque2, N5_torque3, N5_torque4",4
+ML-21,,,0
+ML-22,N3(1-2),"N3_torque1, N3_torque2",2
+ML-23,"N1(1),N2(1)","N1_torque1, N2_torque1",2
+ML-24,N2(1-2),"N2_torque1, N2_torque2",2
+ML-25,,,0
+ML-26,,,0
+ML-27,N5(1-3),"N5_torque1, N5_torque2, N5_torque3",3
+ML-28,"N4(1-5),N5(1-3)","N4_torque1, N4_torque2, N4_torque3, N4_torque4, N4_torque5, N5_torque1, N5_torque2, N5_torque3",8
+ML-29,N5(1-3),"N5_torque1, N5_torque2, N5_torque3",3
+ML-30,"N2(1),N5(1-3)","N2_torque1, N5_torque1, N5_torque2, N5_torque3",4
+ML-31,N5(1-3),"N5_torque1, N5_torque2, N5_torque3",3
+ML-32,N5(1-3),"N5_torque1, N5_torque2, N5_torque3",3
+ML-33,"N2(1),N5(1-3)","N2_torque1, N5_torque1, N5_torque2, N5_torque3",4
+ML-34,,,0
+ML-35,"N1(1-2),N4(1)","N1_torque1, N1_torque2, N4_torque1",3
+ML-36,,,0
+ML-37,,,0
+ML-38,,,0
+ML-39,,,0
+ML-40,,,0
+ML-41,N2(1-2),"N2_torque1, N2_torque2",2
+ML-42,N5(1-14),"N5_torque1, N5_torque2, N5_torque3, N5_torque4, N5_torque5, N5_torque6, N5_torque7, N5_torque8, N5_torque9, N5_torque10, N5_torque11, N5_torque12, N5_torque13, N5_torque14",14
+ML-43,N1(1),N1_torque1,1
+ML-44,,,0
+ML-45,,,0
+ML-46,,,0
+ML-47,,,0
+ML-48,N5(1-18),"N5_torque1, N5_torque2, N5_torque3, N5_torque4, N5_torque5, N5_torque6, N5_torque7, N5_torque8, N5_torque9, N5_torque10, N5_torque11, N5_torque12, N5_torque13, N5_torque14, N5_torque15, N5_torque16, N5_torque17, N5_torque18",18
+ML-49,,,0
+ML-50,"N1(1-2),N5(1-3)","N1_torque1, N1_torque2, N5_torque1, N5_torque2, N5_torque3",5
+ML-51,,,0
+ML-52,,,0
+ML-53,,,0
+ML-54,N3(1),N3_torque1,1
+ML-55,,,0
+ML-56,N1(1),N1_torque1,1
+ML-57,N2(1),N2_torque1,1
+ML-58,,,0
+ML-59,,,0
+ML-60,,,0

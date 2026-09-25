@@ -8,7 +8,7 @@ import pandas as pd
 
 import config
 
-MASTER_FILE = Path(__file__).parent / "station_master.csv"
+MASTER_FILE = Path(__file__).parent / "station_torque_mapping.csv"
 
 
 def _norm_text(value) -> str:
@@ -144,7 +144,14 @@ def load_station_master() -> Dict[str, Dict[str, Any]]:
 
         barcode_spec = _norm_text(row.get("Barcode", ""))
         leak_spec = _norm_text(row.get("Leak", ""))
-        torque_spec = _norm_text(row.get("Torque", ""))
+        torque_spec = _norm_text(row.get("Torque_Spec", row.get("Torque", "")))
+        torque_columns = [
+            column.strip()
+            for column in _norm_text(row.get("Torque_Columns", "")).split(",")
+            if column.strip()
+        ]
+        if not torque_columns:
+            torque_columns = parse_torque_spec(torque_spec)
 
         master[station] = {
             "station": station,
@@ -153,7 +160,7 @@ def load_station_master() -> Dict[str, Dict[str, Any]]:
             "torque_spec": torque_spec,
             "barcode_columns": parse_barcode_spec(barcode_spec),
             "leak_columns": parse_leak_spec(leak_spec),
-            "torque_columns": parse_torque_spec(torque_spec),
+            "torque_columns": _dedupe_keep_order(torque_columns),
         }
 
     return master
@@ -230,12 +237,12 @@ def get_stations_with_torque() -> List[str]:
 
 
 def get_stations_with_leak() -> List[str]:
-    """Return list of stations that provide leak data (only ML-47)."""
-    return [s for s, rule in STATION_MASTER.items() if rule.get("leak_columns")]
+    """Return stations that provide leak data."""
+    return ["ML-47", "ML-53"]
 
 
 def get_leak_columns(schema_columns: List[str], station: str | None = None) -> List[str]:
-    """Leak data lives only at ML-47."""
+    """Leak data is available at ML-47 and ML-53."""
     preferred = [
         "Leak_Value",
         "Leak1",
@@ -249,10 +256,12 @@ def get_leak_columns(schema_columns: List[str], station: str | None = None) -> L
     schema_set = set(schema_columns)
 
     if station:
+        if normalize_station(station) not in {"ML-47", "ML-53"}:
+            return []
         rule = get_station_rule(station)
         master_cols = rule.get("leak_columns", [])
         validated = [c for c in master_cols if c in schema_set]
-        return validated if validated else []
+        return validated if validated else [c for c in preferred if c in schema_set]
 
     # No station → return leak columns (only meaningful from ML-47)
     return [c for c in preferred if c in schema_set]
@@ -268,10 +277,7 @@ def get_torque_columns(schema_columns: List[str], station: str | None = None) ->
     if station:
         rule = get_station_rule(station)
         master_cols = rule.get("torque_columns", [])
-        validated = [c for c in master_cols if c in schema_set]
-        if not validated:
-            validated = [c for c in schema_columns if "torque" in c.lower()]
-        return validated
+        return [c for c in master_cols if c in schema_set]
 
     return [c for c in schema_columns if "torque" in c.lower()]
 

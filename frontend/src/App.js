@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import './index.css';
 import Sidebar from './components/Sidebar';
 import ChatPanel from './components/ChatPanel';
@@ -49,6 +49,24 @@ export default function App() {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [pendingInput, setPendingInput] = useState('');
   const [analyticsDays, setAnalyticsDays] = useState(7);
+  const [stations, setStations] = useState([]);
+  const [connectionStatus, setConnectionStatus] = useState('checking');
+
+  const loadStations = useCallback(async () => {
+    setConnectionStatus('checking');
+    try {
+      const result = await api.getStations();
+      setStations(result.stations || []);
+      setConnectionStatus('online');
+    } catch (err) {
+      setStations([]);
+      setConnectionStatus('offline');
+    }
+  }, []);
+
+  useEffect(() => {
+    loadStations();
+  }, [loadStations]);
 
   const sendMessage = useCallback(async (question) => {
     if (!question.trim() || isLoading) return;
@@ -61,8 +79,10 @@ export default function App() {
       const result = await api.chat(
         question,
         filters.station !== '(all)' ? filters.station : null,
-        null, null,
+        filters.dateFrom || null,
+        filters.dateTo || null,
       );
+      setConnectionStatus('online');
       setMessages(prev => {
         const updated = [...prev];
         const idx = updated.findLastIndex(m => m.role === 'assistant' && m.result === null);
@@ -70,6 +90,7 @@ export default function App() {
         return updated;
       });
     } catch (err) {
+      setConnectionStatus('offline');
       setMessages(prev => {
         const updated = [...prev];
         const idx = updated.findLastIndex(m => m.role === 'assistant' && m.result === null);
@@ -86,7 +107,7 @@ export default function App() {
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, filters.station]);
+  }, [isLoading, filters.station, filters.dateFrom, filters.dateTo]);
 
   const handleQuickQuery = useCallback((q) => {
     setPendingInput(q);
@@ -96,7 +117,14 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <Sidebar filters={filters} onFilterChange={setFilters} onQuickQuery={handleQuickQuery} />
+      <Sidebar
+        filters={filters}
+        stations={stations}
+        connectionStatus={connectionStatus}
+        onRetry={loadStations}
+        onFilterChange={setFilters}
+        onQuickQuery={handleQuickQuery}
+      />
 
       <div className="main-area">
         <div className="tab-bar">

@@ -6,6 +6,11 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).parent.resolve()
 
+DEFAULT_SOURCE_NAME = os.getenv(
+    "HISTORYCARD_DEFAULT_SOURCE_NAME",
+    "mainline_history_card",
+)
+
 PROJECT_ID = os.getenv("PROJECT_ID", "re-platform-sap-gemini-poc")
 LOCATION = os.getenv("LOCATION", "us-central1")
 GEMINI_PROJECT_ID = PROJECT_ID
@@ -18,15 +23,22 @@ GEMINI_SERVICE_ACCOUNT_FILE = os.getenv(
 
 SERVICE_ACCOUNT_FILE = GEMINI_SERVICE_ACCOUNT_FILE
 
-DB_SERVER = os.getenv("DB_SERVER", "10.130.1.73")
-DB_NAME = os.getenv("DB_NAME", "FACTREPRDETL")
-DB_USER = os.getenv("DB_USER", "hcdread")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "hcdread@re1901")
+DB_SERVER = os.getenv("HISTORYCARD_DB_SERVER", "10.130.1.73")
+DB_NAME = os.getenv("HISTORYCARD_DB_DATABASE", "RE_Vallam_J1EA2_Mainline_DB")
+DB_USER = os.getenv("HISTORYCARD_DB_USERNAME", "factreread")
+DB_PASSWORD = os.getenv("HISTORYCARD_DB_PASSWORD", "factreread")
 
-DB_DRIVER = os.getenv("DB_DRIVER", "SQL Server")
+DB_DRIVER = os.getenv("HISTORYCARD_DB_DRIVER", "SQL Server")
 
-TABLE_SCHEMA = os.getenv("TABLE_SCHEMA", "dbo")
-TABLE_NAME = os.getenv("TABLE_NAME", "EngineAssemblyHistoryCard_Master")
+_table_name = os.getenv(
+    "HISTORYCARD_DB_TABLE",
+    "dbo.STN_data",
+)
+if "." in _table_name:
+    TABLE_SCHEMA, TABLE_NAME = _table_name.split(".", 1)
+else:
+    TABLE_SCHEMA = os.getenv("TABLE_SCHEMA", "dbo")
+    TABLE_NAME = _table_name
 
 TIMEZONE = os.getenv("TIMEZONE", "Asia/Kolkata")
 IST_TIMEZONE = TIMEZONE

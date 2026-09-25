@@ -13,32 +13,15 @@ Rules:
 from __future__ import annotations
 from typing import Dict, List, Optional, Tuple
 import pandas as pd
+from station_rules import STATION_MASTER, normalize_station
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Master torque column map  (single source of truth — never changes at runtime)
 # ─────────────────────────────────────────────────────────────────────────────
 STATION_TORQUE_CONFIG: Dict[str, List[str]] = {
-    "ML-08": [f"N2_torque{i}" for i in range(1, 5)],
-    "ML-10": [f"N5_torque{i}" for i in range(1, 17)] + [f"N4_torque{i}" for i in range(1, 17)],
-    "ML-11": ["N2_torque1", "N2_torque2"],
-    "ML-12": ["N2_torque1"],
-    "ML-13": ["N2_torque1"],
-    "ML-17": [f"N5_torque{i}" for i in range(1, 7)] + [f"N4_torque{i}" for i in range(1, 5)],
-    "ML-20": [f"N5_torque{i}" for i in range(1, 5)] + ["N4_torque1", "N4_torque4"],
-    "ML-22": ["N2_torque1", "N2_torque2", "N3_torque1", "N1_torque1"],
-    "ML-25": [f"N5_torque{i}" for i in range(1, 4)] + ["N4_torque1", "N3_torque1"],
-    "ML-27": [f"N5_torque{i}" for i in range(1, 6)] + ["N4_torque1", "N4_torque5"],
-    "ML-28": ["N4_torque1", "N2_torque1"],
-    "ML-31": ["N2_torque1"],
-    "ML-33": ["N1_torque1", "N1_torque2", "N2_torque1"],
-    "ML-38": ["N5_torque1", "N5_torque14", "N4_torque1", "N4_torque14"],
-    "ML-39": ["N2_torque1", "N2_torque2", "N1_torque1"],
-    "ML-43": ["N5_torque1", "N5_torque18", "N4_torque1", "N4_torque18"],
-    "ML-44": ["N5_torque1", "N5_torque3", "N4_torque1", "N4_torque3"],
-    "ML-45": ["N1_torque1", "N1_torque2", "N2_torque1"],
-    "ML-48": ["N1_torque1"],
-    "ML-49": ["N2_torque1"],
-    "ML-50": ["N2_torque1", "N1_torque1", "N1_torque2"],
+    station: rule.get("torque_columns", [])
+    for station, rule in STATION_MASTER.items()
+    if rule.get("torque_columns")
 }
 
 STATIONS_WITH_TORQUE: List[str] = sorted(
@@ -67,7 +50,7 @@ def get_torque_columns_for_station(
     schema_set = set(schema_columns)
 
     if station:
-        station = station.upper().strip()
+        station = normalize_station(station)
         cols = STATION_TORQUE_CONFIG.get(station, [])
         return [c for c in cols if c in schema_set]
 
